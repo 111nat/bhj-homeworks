@@ -1,58 +1,50 @@
-function nextSlide() {
-    for (let i = 0; i < document.getElementsByClassName('slider__item').length; i++) {
-
-        if (document.getElementsByClassName('slider__item').item(i).className.includes('slider__item_active')) {
-            document.getElementsByClassName('slider__item').item(i).className = document.getElementsByClassName('slider__item').item(i).className.replace(' slider__item_active', '');
-
-            if(i + 1 == document.getElementsByClassName('slider__item').length) {
-                document.getElementsByClassName('slider__item').item(0).className += ' slider__item_active';
-                document.getElementsByClassName('slider__dot').item(0).click();
-                break;
-            } else {
-                document.getElementsByClassName('slider__item').item(i + 1).className += ' slider__item_active';
-                document.getElementsByClassName('slider__dot').item(i + 1).click();
-                break;
-            }
+const slider__dot = document.getElementsByClassName('slider__dot');
+function slider(slide) {
+    const slider__item = document.getElementsByClassName('slider__item');
+    for (let i = 0; i < slider__item.length; i++) {
+        if (slider__item.item(i).classList.contains('slider__item_active')) {
+            slider__item.item(i).classList.remove('slider__item_active');
+        }
+        if (slider__dot.item(i).classList.contains('slider__dot_active')) {
+            slider__dot.item(i).classList.remove('slider__dot_active');
         }
     }
+    slider__item.item(slide).classList.add('slider__item_active');
+    slider__dot.item(slide).classList.add('slider__dot_active');
+}
+
+for (let i = 0; i < slider__dot.length; i++) {
+    slider__dot.item(i).onclick = () => {
+        slider(i);
+    };
 }
 
 document.getElementsByClassName('slider__arrow_next').item(0).onclick = () => {
- nextSlide();
-};
-
-function prevSlide() {
-    for (let i = 0; i < document.getElementsByClassName('slider__item').length; i++) {
-
-        if (document.getElementsByClassName('slider__item').item(i).className.includes('slider__item_active')) {
-            document.getElementsByClassName('slider__item').item(i).className = document.getElementsByClassName('slider__item').item(i).className.replace(' slider__item_active', '');
-
-            if(i - 1 == -1) {
-                document.getElementsByClassName('slider__item').item(document.getElementsByClassName('slider__item').length - 1).className += ' slider__item_active';
-                document.getElementsByClassName('slider__dot').item(document.getElementsByClassName('slider__item').length - 1).click();
-                break;
-            } else {
-                document.getElementsByClassName('slider__item').item(i - 1).className += ' slider__item_active';
-                document.getElementsByClassName('slider__dot').item(i - 1).click();
+    const slider__item = document.getElementsByClassName('slider__item');
+    for (let i = 0; i < slider__item.length; i++)
+    {
+        if (slider__item.item(i).classList.contains('slider__item_active')) {
+            if (i + 1 == slider__item.length) {
+                slider(0);
                 break;
             }
+            slider(i + 1);
+            break;
         }
     }
-}
-
-document.getElementsByClassName('slider__arrow_prev').item(0).onclick = () => {
-    prevSlide();
 };
 
-for (let i = 0; i < document.getElementsByClassName('slider__dot').length; i++) {
-    document.getElementsByClassName('slider__dot').item(i).onclick = () => {
-        for (let j = 0; j < document.querySelectorAll('div.slider__dot_active').length; j++) {
-            document.querySelectorAll('div.slider__dot_active').item(j).className = document.querySelectorAll('div.slider__dot_active').item(j).className.replace(' slider__dot_active', '');
+document.getElementsByClassName('slider__arrow_prev').item(0).onclick = () => {
+    const slider__item = document.getElementsByClassName('slider__item');
+    for (let i = 0; i < slider__item.length; i++)
+    {
+        if (slider__item.item(i).classList.contains('slider__item_active')) {
+            if (i - 1 == -1) {
+                slider(slider__item.length - 1);
+                break;
+            }
+            slider(i - 1);
+            break;
         }
-        document.getElementsByClassName('slider__dot').item(i).className += ' slider__dot_active';
-
-        document.querySelector('div.slider__item_active').className = document.querySelector('div.slider__item_active').className.replace(' slider__item_active', '');
-
-        document.getElementsByClassName('slider__item').item(i).className += ' slider__item_active';
-    };
-}
+    }
+};
