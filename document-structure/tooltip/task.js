@@ -1,65 +1,73 @@
 const has_tooltip = document.getElementsByClassName('has-tooltip');
 
 for (let i = 0; i < has_tooltip.length; i++) {
-    has_tooltip[i].outerHTML = has_tooltip[i].outerHTML + `<div class="tooltip" data-position="right">${has_tooltip[i].getAttribute('title')}</div>`;
-}
-
-for (let i = 0; i < has_tooltip.length; i++) {
     has_tooltip[i].onclick = function(){return false};
 }
 
-const tooltip = document.getElementsByClassName('tooltip');
-for (let i = 0; i < has_tooltip.length; i++) {
-    has_tooltip[i].addEventListener('click', function () {
-        const search_tooltip_active = document.getElementsByClassName('tooltip_active');
-        if (search_tooltip_active.length != 0) {
-            if (tooltip[i].classList.contains('tooltip_active')) {
-                tooltip[i].classList.remove('tooltip_active');
+function chooser_location(search_tooltip_active, i) {
+    switch(search_tooltip_active.dataset.position) {
+        case 'bottom':
+            search_tooltip_active.setAttribute('style', `left: ${has_tooltip[i].getBoundingClientRect().left}px; top: ${has_tooltip[i].getBoundingClientRect().bottom}px`);
+        break;
+        
+        case 'top':
+            search_tooltip_active.setAttribute('style', `left: ${has_tooltip[i].getBoundingClientRect().left}px; top: ${has_tooltip[i].getBoundingClientRect().top - (tooltip[i].getBoundingClientRect().height)}px`);
+        break;
+
+        case 'left':
+            search_tooltip_active.setAttribute('style', `left: ${has_tooltip[i].getBoundingClientRect().left - (tooltip[i].getBoundingClientRect().width)}px; top: ${has_tooltip[i].getBoundingClientRect().top - (tooltip[i].getBoundingClientRect().height/2 - has_tooltip[i].getBoundingClientRect().height/2)}px`);
+        break;
+
+        case 'right':
+            search_tooltip_active.setAttribute('style', `left: ${has_tooltip[i].getBoundingClientRect().right}px; top: ${has_tooltip[i].getBoundingClientRect().top - (search_tooltip_active.getBoundingClientRect().height/2 - has_tooltip[i].getBoundingClientRect().height/2)}px`);
+        break;
+    }         
+}
+
+function shower(i) {
+    const search_tooltip_active = document.getElementsByClassName('tooltip_active')[0];
+    
+    const tooltip = document.querySelectorAll('a.has-tooltip+div.tooltip'); 
+
+    if (search_tooltip_active && has_tooltip[i].getAttribute('title') == search_tooltip_active.innerHTML) {
+        search_tooltip_active.classList.remove('tooltip_active');
+    }
+    else {
+        if (search_tooltip_active) {
+            search_tooltip_active.classList.remove('tooltip_active');
+        }
+        for (let j = 0; j < tooltip.length; j++) {
+            if (has_tooltip[i].getAttribute('title') == tooltip[j].innerHTML) {
+                tooltip[j].classList.add('tooltip_active');
             }
         }
-        else {
-            tooltip[i].classList.toggle('tooltip_active');
-            switch(tooltip[i].dataset.position) {
-                case 'bottom':
-                    tooltip[i].setAttribute('style', `left: ${has_tooltip[i].getBoundingClientRect().left}px; top: ${has_tooltip[i].getBoundingClientRect().bottom}px`);
-                break;
-                
-                case 'top':
-                    tooltip[i].setAttribute('style', `left: ${has_tooltip[i].getBoundingClientRect().left}px; top: ${has_tooltip[i].getBoundingClientRect().top - (tooltip[i].getBoundingClientRect().height)}px`);
-                break;
+    }
+}
 
-                case 'left':
-                    tooltip[i].setAttribute('style', `left: ${has_tooltip[i].getBoundingClientRect().left - (tooltip[i].getBoundingClientRect().width)}px; top: ${has_tooltip[i].getBoundingClientRect().top - (tooltip[i].getBoundingClientRect().height/2 - has_tooltip[i].getBoundingClientRect().height/2)}px`);
-                break;
+for (let i = 0; i < has_tooltip.length; i++) {
+    has_tooltip[i].addEventListener('click', () => {
+        has_tooltip[i].outerHTML = has_tooltip[i].outerHTML + `<div class="tooltip" data-position="bottom">${has_tooltip[i].getAttribute('title')}</div>`;
+        has_tooltip[i].onclick = function(){return false};
 
-                case 'right':
-                    tooltip[i].setAttribute('style', `left: ${has_tooltip[i].getBoundingClientRect().right}px; top: ${has_tooltip[i].getBoundingClientRect().top - (tooltip[i].getBoundingClientRect().height/2 - has_tooltip[i].getBoundingClientRect().height/2)}px`);
-                break;
-            }         
-        }       
+        shower(i);
+
+        chooser_location(document.getElementsByClassName('tooltip_active')[0], i);
+
+
+
+        has_tooltip[i].addEventListener('click', () => {
+            shower(i);
+            chooser_location(document.getElementsByClassName('tooltip_active')[0], i);
+        });
     });
 }
 
 window.addEventListener('scroll', () => {
-    for (let i = 0; i < has_tooltip.length; i++) {       
-        if (tooltip[i].classList.contains('tooltip_active')) {
-           
-            switch(tooltip[i].dataset.position) {
-                case 'bottom':
-                    tooltip[i].setAttribute('style', `left: ${has_tooltip[i].getBoundingClientRect().left}px; top: ${has_tooltip[i].getBoundingClientRect().bottom}px`);
-                break;
-                
-                case 'top':
-                    tooltip[i].setAttribute('style', `left: ${has_tooltip[i].getBoundingClientRect().left}px; top: ${has_tooltip[i].getBoundingClientRect().top - (tooltip[i].getBoundingClientRect().height)}px`);
-                break;
-
-                case 'left':
-                    tooltip[i].setAttribute('style', `left: ${has_tooltip[i].getBoundingClientRect().left - (tooltip[i].getBoundingClientRect().width)}px; top: ${has_tooltip[i].getBoundingClientRect().top - (tooltip[i].getBoundingClientRect().height/2 - has_tooltip[i].getBoundingClientRect().height/2)}px`);
-                break;
-
-                case 'right':
-                    tooltip[i].setAttribute('style', `left: ${has_tooltip[i].getBoundingClientRect().right}px; top: ${has_tooltip[i].getBoundingClientRect().top - (tooltip[i].getBoundingClientRect().height/2 - has_tooltip[i].getBoundingClientRect().height/2)}px`);
-                break;
+    const tooltip_active = document.getElementsByClassName('tooltip_active')[0];
+    if (tooltip_active) {
+        for (let i = 0; i < has_tooltip.length; i++) {
+            if (has_tooltip[i].getAttribute('title') == tooltip_active.innerHTML) {
+                chooser_location(tooltip_active, i);
             }
         }
     }

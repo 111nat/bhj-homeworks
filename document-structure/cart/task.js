@@ -2,16 +2,29 @@ const product = document.getElementsByClassName('product');
 
 const cart = document.getElementsByClassName('cart')[0];
 
-if (localStorage.length != 0 && localStorage.first.includes('cart__title')) {
-    cart.removeChild(cart.getElementsByClassName('cart__title')[0]);
-    cart.removeChild(cart.getElementsByClassName('cart__products')[0]);
-    cart.insertAdjacentHTML('afterbegin', localStorage.getItem('first'));
+function saver() {
+    let arr = [];
+    const cart__product = document.getElementsByClassName('cart__product');
+    for (let i = 0; i < cart__product.length; i++) {
+        arr.push({id: cart__product[i].dataset.id, src: cart__product[i].getElementsByClassName('cart__product-image')[0].getAttribute('src'), count: cart__product[i].getElementsByClassName('cart__product-count')[0].innerHTML});
+    }
+    localStorage.clear();
+    localStorage.setItem('first', JSON.stringify(arr));
+}
+
+if (localStorage.length != 0 && JSON.parse(localStorage.getItem('first')).length) {
+    const arr = JSON.parse(localStorage.getItem('first'));
+    for (let i = 0; i < arr.length; i++) {
+        cart.getElementsByClassName('cart__products')[0].insertAdjacentHTML('beforeend', `<div class="cart__product" data-id="${arr[i].id}"> <img class="cart__product-image" src="${arr[i].src}"> <div class="cart__product-count">${arr[i].count}</div></div>`);
+    }
 
     //delete
     for (let i = 1; i <= document.getElementsByClassName('cart__product').length; i++) {
         const cart__product_delete = document.getElementsByClassName('cart__product')[document.getElementsByClassName('cart__product').length - i];
         cart__product_delete.addEventListener('click', () => {
             cart__product_delete.remove();
+
+            saver();
 
             if(document.getElementsByClassName('cart__product').length == 0) {
                 cart.setAttribute('style', 'visibility: hidden');
@@ -136,14 +149,14 @@ for (let i = 0; i < product.length; i++) {
         cart__product_delete.addEventListener('click', () => {
             cart__product_delete.remove();
 
+            saver();
+
             if(cart__product.length == 0) {
                 cart.setAttribute('style', 'visibility: hidden');
             }
         });
 
-        localStorage.clear();
-
-        localStorage.setItem('first', cart.innerHTML);
+        saver();
     });
 }
 
