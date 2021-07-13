@@ -5,7 +5,7 @@ for (let i = 0; i < has_tooltip.length; i++) {
 }
 
 function chooser_location(search_tooltip_active, i) {
-    switch(search_tooltip_active.dataset.position) {
+    switch(has_tooltip[i].dataset.position) {
         case 'bottom':
             search_tooltip_active.setAttribute('style', `left: ${has_tooltip[i].getBoundingClientRect().left}px; top: ${has_tooltip[i].getBoundingClientRect().bottom}px`);
         break;
@@ -46,7 +46,8 @@ function shower(i) {
 
 for (let i = 0; i < has_tooltip.length; i++) {
     has_tooltip[i].addEventListener('click', () => {
-        has_tooltip[i].outerHTML = has_tooltip[i].outerHTML + `<div class="tooltip" data-position="bottom">${has_tooltip[i].getAttribute('title')}</div>`;
+        has_tooltip[i].setAttribute('data-position', 'bottom');
+        has_tooltip[i].outerHTML = has_tooltip[i].outerHTML + `<div class="tooltip">${has_tooltip[i].getAttribute('title')}</div>`;
         has_tooltip[i].onclick = function(){return false};
 
         shower(i);
