@@ -13,6 +13,8 @@ function welcomer(id) {
 
         button.remove();
         user_id.innerHTML = '';
+
+        delete localStorage.id;
     });
 }
 

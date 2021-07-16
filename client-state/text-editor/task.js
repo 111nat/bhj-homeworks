@@ -3,9 +3,7 @@ prev_editor.outerHTML = prev_editor.outerHTML + '<button id="button">Очист�
 
 const editor = document.getElementById('editor');
 
-if (localStorage.length && localStorage.getItem('first')) {
-    editor.value = localStorage.first;
-}
+editor.value = localStorage.getItem('first');
 
 editor.addEventListener('keyup', () => {
     localStorage.first = editor.value;
@@ -14,5 +12,5 @@ editor.addEventListener('keyup', () => {
 const button = document.getElementById('button');
 button.addEventListener('click', () => {
     editor.value = '';
-    localStorage.first = editor.value;
+    delete localStorage.first;
 });
